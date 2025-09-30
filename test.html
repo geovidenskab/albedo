@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albedo Calculator - Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-result {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 3px;
+        }
+        .pass {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .fail {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <h1>Albedo Calculator - Test Suite</h1>
+    
+    <div class="test-section">
+        <h2>Browser Kompatibilitet</h2>
+        <div id="browserTests"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>JavaScript Funktioner</h2>
+        <div id="jsTests"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Canvas Support</h2>
+        <div id="canvasTests"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>LocalStorage</h2>
+        <div id="storageTests"></div>
+    </div>
+
+    <script>
+        // Test funktioner
+        function runTests() {
+            testBrowserCompatibility();
+            testJavaScriptFeatures();
+            testCanvasSupport();
+            testLocalStorage();
+        }
+
+        function testBrowserCompatibility() {
+            const container = document.getElementById('browserTests');
+            
+            // Test moderne JavaScript features
+            const tests = [
+                {
+                    name: 'Arrow Functions',
+                    test: () => typeof (() => {}) === 'function'
+                },
+                {
+                    name: 'Template Literals',
+                    test: () => typeof `test` === 'string'
+                },
+                {
+                    name: 'Destructuring',
+                    test: () => {
+                        try {
+                            const {a} = {a: 1};
+                            return a === 1;
+                        } catch (e) {
+                            return false;
+                        }
+                    }
+                },
+                {
+                    name: 'Async/Await',
+                    test: () => typeof async function() {} === 'function'
+                }
+            ];
+
+            tests.forEach(test => {
+                const result = test.test();
+                const div = document.createElement('div');
+                div.className = `test-result ${result ? 'pass' : 'fail'}`;
+                div.textContent = `${test.name}: ${result ? 'PASS' : 'FAIL'}`;
+                container.appendChild(div);
+            });
+        }
+
+        function testJavaScriptFeatures() {
+            const container = document.getElementById('jsTests');
+            
+            // Test om vores moduler er tilgængelige
+            const tests = [
+                {
+                    name: 'Canvas Manager',
+                    test: () => typeof canvasManager !== 'undefined'
+                },
+                {
+                    name: 'Export Manager',
+                    test: () => typeof exportManager !== 'undefined'
+                },
+                {
+                    name: 'App Object',
+                    test: () => typeof app !== 'undefined'
+                }
+            ];
+
+            tests.forEach(test => {
+                const result = test.test();
+                const div = document.createElement('div');
+                div.className = `test-result ${result ? 'pass' : 'fail'}`;
+                div.textContent = `${test.name}: ${result ? 'PASS' : 'FAIL'}`;
+                container.appendChild(div);
+            });
+        }
+
+        function testCanvasSupport() {
+            const container = document.getElementById('canvasTests');
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            const tests = [
+                {
+                    name: 'Canvas Element',
+                    test: () => canvas !== null
+                },
+                {
+                    name: '2D Context',
+                    test: () => ctx !== null
+                },
+                {
+                    name: 'ImageData Support',
+                    test: () => typeof ctx.createImageData === 'function'
+                },
+                {
+                    name: 'getImageData Support',
+                    test: () => typeof ctx.getImageData === 'function'
+                }
+            ];
+
+            tests.forEach(test => {
+                const result = test.test();
+                const div = document.createElement('div');
+                div.className = `test-result ${result ? 'pass' : 'fail'}`;
+                div.textContent = `${test.name}: ${result ? 'PASS' : 'FAIL'}`;
+                container.appendChild(div);
+            });
+        }
+
+        function testLocalStorage() {
+            const container = document.getElementById('storageTests');
+            
+            const tests = [
+                {
+                    name: 'LocalStorage Available',
+                    test: () => typeof localStorage !== 'undefined'
+                },
+                {
+                    name: 'Set/Get Data',
+                    test: () => {
+                        try {
+                            localStorage.setItem('test', 'value');
+                            const result = localStorage.getItem('test') === 'value';
+                            localStorage.removeItem('test');
+                            return result;
+                        } catch (e) {
+                            return false;
+                        }
+                    }
+                }
+            ];
+
+            tests.forEach(test => {
+                const result = test.test();
+                const div = document.createElement('div');
+                div.className = `test-result ${result ? 'pass' : 'fail'}`;
+                div.textContent = `${test.name}: ${result ? 'PASS' : 'FAIL'}`;
+                container.appendChild(div);
+            });
+        }
+
+        // Kør tests når siden indlæses
+        document.addEventListener('DOMContentLoaded', runTests);
+    </script>
+</body>
+</html>

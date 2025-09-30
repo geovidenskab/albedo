@@ -1,0 +1,30 @@
+{
+  "name": "albedo-calculator",
+  "version": "1.0.0",
+  "description": "Web application for calculating albedo from satellite images",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000",
+    "serve": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "albedo",
+    "satellite",
+    "remote-sensing",
+    "geography",
+    "education",
+    "climate"
+  ],
+  "author": "Philip K. Jakobsen",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/geovidenskab/albedo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/geovidenskab/albedo/issues"
+  },
+  "homepage": "https://github.com/geovidenskab/albedo#readme",
+  "devDependencies": {},
+  "dependencies": {}
+}

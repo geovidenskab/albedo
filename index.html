@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Albedo Beregner</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>Albedo Beregner</h1>
+            <p>Upload et billede og marker områder for at beregne albedo</p>
+            <div class="credit">Udviklet af Philip K. Jakobsen, Silkeborg Gymnasium</div>
+        </header>
+
+        <!-- Upload Section -->
+        <section id="uploadSection" class="section">
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📁</div>
+                <p>Klik eller træk et billede hertil</p>
+                <p class="upload-formats">JPG, PNG, GIF</p>
+            </div>
+            <input type="file" id="fileInput" accept="image/*" hidden>
+        </section>
+
+        <!-- Canvas Section -->
+        <section id="canvasSection" class="section hidden">
+            <div class="instructions">
+                <h3>Instruktioner:</h3>
+                <ol>
+                    <li>Marker først det <strong style="color: #ef4444;">hvide referencekort</strong> (70% albedo)</li>
+                    <li>Marker derefter dine <strong style="color: #22c55e;">måleområder</strong></li>
+                    <li>Navngiv områderne eller lad dem nummereres automatisk</li>
+                </ol>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="imageCanvas"></canvas>
+                <div class="canvas-info">
+                    <span>Markeringer: <strong id="selectionCount">0</strong></span>
+                    <button class="btn btn-secondary btn-sm" onclick="app.clearLastSelection()">Fortryd sidste</button>
+                </div>
+            </div>
+
+            <div class="selections-list" id="selectionsList"></div>
+
+            <div class="actions">
+                <button class="btn btn-success" onclick="app.finishMeasurements()" id="finishBtn" disabled>
+                    Afslut opmålinger
+                </button>
+                <button class="btn btn-secondary" onclick="app.clearAll()">
+                    Ryd alt
+                </button>
+            </div>
+        </section>
+
+        <!-- Measurement Info Section -->
+        <section id="infoSection" class="section hidden">
+            <h3>Oplysninger for denne måling</h3>
+            <div class="form-group">
+                <label>Lokation/Sted:</label>
+                <input type="text" id="locationInput" placeholder="F.eks. Skolegård, asfalt">
+            </div>
+            <div class="form-group">
+                <label>Overfladetemperatur (°C):</label>
+                <input type="number" id="temperatureInput" placeholder="F.eks. 25" step="0.1">
+            </div>
+            <div class="form-group">
+                <label>Kommentarer:</label>
+                <textarea id="commentInput" placeholder="Eventuelle observationer..."></textarea>
+            </div>
+            <button class="btn btn-primary" onclick="app.saveMeasurement()">
+                Gem måling
+            </button>
+        </section>
+
+        <!-- Results Section -->
+        <section id="resultsSection" class="section hidden">
+            <div class="section-header">
+                <h3>Gemte målinger</h3>
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="exportManager.exportCSV()">
+                        Eksporter CSV
+                    </button>
+                    <button class="btn btn-secondary" onclick="exportManager.exportExcel()">
+                        Eksporter Excel
+                    </button>
+                </div>
+            </div>
+            <div id="resultsTable"></div>
+        </section>
+
+        <!-- New Image Button -->
+        <div id="newImageSection" class="section hidden" style="text-align: center;">
+            <button class="btn btn-primary" onclick="app.newImage()">
+                Upload nyt billede
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal for naming areas -->
+    <div id="nameModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Navngiv måleområde <span id="modalAreaNumber"></span></h3>
+            <input type="text" id="areaNameInput" placeholder="F.eks. Asfalt, Græs, Is...">
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="app.saveAreaName()">OK</button>
+                <button class="btn btn-secondary" onclick="app.skipAreaName()">Spring over</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/calculations.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/canvas.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
