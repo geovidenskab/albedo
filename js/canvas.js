@@ -7,6 +7,10 @@ const canvasManager = {
     isDrawing: false,
     startX: 0,
     startY: 0,
+    // rAF throttling state for smoother drawing performance
+    rafScheduled: false,
+    lastMouseX: 0,
+    lastMouseY: 0,
 
     init(canvasElement) {
         this.canvas = canvasElement;
@@ -18,6 +22,9 @@ const canvasManager = {
         this.canvas.addEventListener('mousedown', (e) => this.onMouseDown(e));
         this.canvas.addEventListener('mousemove', (e) => this.onMouseMove(e));
         this.canvas.addEventListener('mouseup', (e) => this.onMouseUp(e));
+        // Ensure we stop drawing when mouse leaves canvas or mouseup happens outside
+        this.canvas.addEventListener('mouseleave', () => this.onMouseLeave());
+        window.addEventListener('mouseup', (e) => this.onMouseUp(e));
     },
 
     loadImage(file) {
@@ -127,20 +134,33 @@ const canvasManager = {
         const rect = this.canvas.getBoundingClientRect();
         const scaleX = this.canvas.width / rect.width;
         const scaleY = this.canvas.height / rect.height;
-        const currentX = (e.clientX - rect.left) * scaleX;
-        const currentY = (e.clientY - rect.top) * scaleY;
+        this.lastMouseX = (e.clientX - rect.left) * scaleX;
+        this.lastMouseY = (e.clientY - rect.top) * scaleY;
 
-        this.drawImage();
+        if (this.rafScheduled) return;
+        this.rafScheduled = true;
+        requestAnimationFrame(() => {
+            this.rafScheduled = false;
+            if (!this.isDrawing) return;
+            this.drawImage();
 
-        const width = currentX - this.startX;
-        const height = currentY - this.startY;
-        const color = this.selections.length === 0 ? '#ef4444' : '#22c55e';
+            const width = this.lastMouseX - this.startX;
+            const height = this.lastMouseY - this.startY;
+            const color = this.selections.length === 0 ? '#ef4444' : '#22c55e';
 
-        this.ctx.strokeStyle = color;
-        this.ctx.lineWidth = 2;
-        this.ctx.setLineDash([5, 5]);
-        this.ctx.strokeRect(this.startX, this.startY, width, height);
-        this.ctx.setLineDash([]);
+            this.ctx.strokeStyle = color;
+            this.ctx.lineWidth = 2;
+            this.ctx.setLineDash([5, 5]);
+            this.ctx.strokeRect(this.startX, this.startY, width, height);
+            this.ctx.setLineDash([]);
+        });
+    },
+
+    onMouseLeave() {
+        if (this.isDrawing) {
+            this.isDrawing = false;
+            this.drawImage();
+        }
     },
 
     onMouseUp(e) {

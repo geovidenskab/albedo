@@ -1,4 +1,13 @@
 // Hovedapplikation
+// Simple HTML escape to prevent XSS when injecting user-provided text
+function escapeHTML(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
 const app = {
     currentAreaIndex: null,
 
@@ -78,13 +87,14 @@ const app = {
         selections.forEach((sel, index) => {
             const color = index === 0 ? 'color-red' : 'color-green';
             const name = sel.name || (index === 0 ? 'Referencekort' : `Område ${index}`);
-            const albedo = sel.albedo !== undefined ? 
+            const safeName = escapeHTML(name);
+            const albedo = sel.albedo !== undefined ?
                 `<span class="selection-albedo">${sel.albedo.toFixed(1)}%</span>` : '';
 
             html += `
                 <div class="selection-item">
                     <div class="color-indicator ${color}"></div>
-                    <span class="selection-name">${name}</span>
+                    <span class="selection-name">${safeName}</span>
                     ${albedo}
                     <span class="selection-pixels">${Math.round(sel.width)} × ${Math.round(sel.height)} px</span>
                 </div>
@@ -213,11 +223,11 @@ const app = {
                 if (!result.isReference) {
                     html += `
                         <tr>
-                            <td>${measurement.date}</td>
-                            <td>${result.name}</td>
+                            <td>${escapeHTML(measurement.date)}</td>
+                            <td>${escapeHTML(result.name)}</td>
                             <td class="result-albedo">${result.albedo.toFixed(1)}%</td>
-                            <td>${measurement.location || '-'}</td>
-                            <td>${measurement.temperature || '-'}</td>
+                            <td>${escapeHTML(measurement.location || '-')}</td>
+                            <td>${escapeHTML(measurement.temperature || '-')}</td>
                             <td>
                                 <span class="result-delete" onclick="app.deleteMeasurement(${mIndex}, ${rIndex})">🗑️</span>
                             </td>
